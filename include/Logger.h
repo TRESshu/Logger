@@ -12,6 +12,15 @@
 #include <string>
 #include <filesystem>  // 确保包含此头文件
 namespace fs = std::filesystem;
+#ifdef _WIN32  // Windows 平台
+    #ifdef LOGGER_DLL_EXPORTS
+        #define LOGGER_API __declspec(dllexport)
+    #else
+        #define LOGGER_API __declspec(dllimport)
+    #endif
+#else  //Linux
+    #define LOGGER_API __attribute__((visibility("default")))
+#endif
 class Logger
 {
 public:
@@ -143,23 +152,25 @@ private:
     Logger(const Logger&) = delete;
     Logger& operator=(const Logger&) = delete;
 };
-
+//导出链接函数
+#ifdef BUILDING_DLL
 extern "C" {
 
-__declspec(dllexport) void logger_enable_console_output() {
+LOGGER_API void logger_enable_console_output() {
     Logger::getInstance().enableConsoleOutput();
 }
 
-__declspec(dllexport) void logger_enable_file_output(const char* file_path, int mode) {
+LOGGER_API void logger_enable_file_output(const char* file_path, int mode) {
     Logger::getInstance().enableFileOutput(file_path, static_cast<Logger::FileMode>(mode));
 }
 
-__declspec(dllexport) void logger_info(const char* message) {
+LOGGER_API void logger_info(const char* message) {
     Logger::getInstance().info(message);
 }
 
-__declspec(dllexport) void logger_set_level(int level) {
+LOGGER_API void logger_set_level(int level) {
     Logger::getInstance().setLevel(static_cast<spdlog::level::level_enum>(level));
 }
 
 }
+#endif

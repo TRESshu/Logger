@@ -1,5 +1,5 @@
 import ctypes
-logger_dll = ctypes.CDLL('D:/C++_Project//Logger/build/windows/x64/release/Logger.dll')
+logger_dll = ctypes.CDLL('/home/tres/C++_Project/Logger/build/linux/x86_64/release/libLogger.so')
 logger_dll.logger_enable_console_output.restype = None
 logger_dll.logger_enable_file_output.restype = None
 logger_dll.logger_enable_file_output.argtypes = [ctypes.c_char_p, ctypes.c_int]

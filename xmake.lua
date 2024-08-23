@@ -3,12 +3,44 @@ add_rules("mode.debug", "mode.release")
 --dd_requires("spdlog", {configs = {header_only = true}})
 -- 设置 C++20 标准
 set_languages("cxx20")
+-- Logger 动态链接库
 target("Logger")
-    set_kind("shared") 
+    set_kind("shared")
     add_files("src/*.cpp")
     add_includedirs("include")
     add_includedirs("spdlog-1.14.1/include")
+    add_defines("BUILDING_DLL")
+    set_default(false)  -- 默认不构建
+
+-- test 可执行文件
+target("test")
+    set_kind("binary")
+    add_files("src/*.cpp")
+    add_includedirs("include")
+    add_includedirs("spdlog-1.14.1/include")
+    add_defines("BUILDING_EXE")
+    set_default(false)  -- 默认不构建
     --add_packages("spdlog")  
+
+-- 自定义任务来构建 DLL
+task("build_dll")
+on_run(function ()
+    os.exec("xmake build Logger")
+end)
+set_menu {
+    usage = "xmake build_dll",
+    description = "Build the dynamic library",
+}
+
+-- 自定义任务来构建可执行文件
+task("build_exe")
+on_run(function ()
+    os.exec("xmake build test")
+end)
+set_menu {
+    usage = "xmake build_exe",
+    description = "Build the executable",
+}
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
 --
