@@ -1,0 +1,2 @@
+[2024-08-22 17:18:08.577] [logger] [info] This is an info message from Python!
+[2024-08-22 17:19:44.146] [logger] [info] This is an info message from Python!
